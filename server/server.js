@@ -20,14 +20,18 @@ passport.use(new InstagramStrategy({
 		callbackURL: "http://localhost:5000/auth/instagram/callback"
 	},
 	(accessToken, refreshToken, profile, done) => {
-		axios.get(`${base_url}/users/self/media/recent/?access_token=${accessToken}`)
+	console.log('access: ', accessToken)
+		const id = 534843750
+		//axios.get(`${base_url}/users/self/follows?access_token=${accessToken}`)
+		axios.get(`${base_url}/users/${id}/media/recent/?access_token=${accessToken}`)
 			.then(res => {
-				console.log('res: ', res.data)
+				//console.log('res: ', res.data.data)
 				const user = res.data.data
-				const info = user.map(e => e.user)
-				console.log('info: ', info)
+				const output = user.map(e => e.likes)
+				const total = output.reduce((sum, {count}) => sum + count, 0)
+				console.log('total: ', total)
 			})
-			.catch(err => console.log('err: ', err))
+			.catch(err => console.log('err: ', err.message))
 	}
 ));
 
@@ -39,7 +43,7 @@ app.get('/auth/instagram/callback',
 	(req,res,next) => {
 	console.log('success: ', req.body)
 	})
-
+//todo: need to use google maps api to translate a location to long and latitude
 
 app.listen(app.get('port'), () => {
 	console.log('listening on: ', app.get('port'))
