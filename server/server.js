@@ -1,11 +1,13 @@
 require('dotenv').config()
-const passport = require('passport')
 const InstagramStrategy = require('passport-instagram').Strategy
 const bodyParser = require('body-parser')
+const passport = require('passport')
 const express = require('express')
+const axios = require('axios')
 const cors = require('cors')
 
 const app = module.exports = express()
+const base_url = module.exports = 'https://api.instagram.com/v1'
 app.set('port', process.env.PORT || 5000)
 
 // MIDDLEWARE FOR EVERYTHING TO PASS THROUGH ================
@@ -17,8 +19,15 @@ passport.use(new InstagramStrategy({
 		clientSecret: process.env.INSTA_CLIENT_SECRET,
 		callbackURL: "http://localhost:5000/auth/instagram/callback"
 	},
-	function(accessToken, refreshToken, profile, done) {
-		console.log('stuff: ', accessToken, profile)
+	(accessToken, refreshToken, profile, done) => {
+		axios.get(`${base_url}/users/self/media/recent/?access_token=${accessToken}`)
+			.then(res => {
+				console.log('res: ', res.data)
+				const user = res.data.data
+				const info = user.map(e => e.user)
+				console.log('info: ', info)
+			})
+			.catch(err => console.log('err: ', err))
 	}
 ));
 
