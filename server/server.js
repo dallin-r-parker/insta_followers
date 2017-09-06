@@ -27,13 +27,17 @@ passport.use(new InstagramStrategy({
 			.then(res => {
 				//console.log('res: ', res.data.data)
 				const user = res.data.data
-				const output = user.map(e => e.likes)
-				const total = output.reduce((sum, {count}) => sum + count, 0)
+				const likes = user.map(e => e.likes)
+				const total = likes.reduce((sum, {count}) => sum + count, 0)
 				console.log('total: ', total)
 			})
 			.catch(err => console.log('err: ', err.message))
 	}
 ));
+
+
+
+
 
 
 app.get('/login', req => console.log('failure: ', req.body))
