@@ -47,7 +47,6 @@ app.get('/auth/instagram/callback',
 	(req,res,next) => {
 	console.log('success: ', req.body)
 	})
-//todo: need to use google maps api to translate a location to long and latitude
 
 app.listen(app.get('port'), () => {
 	console.log('listening on: ', app.get('port'))
